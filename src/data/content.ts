@@ -6,6 +6,7 @@ export const company = {
   email: 'info@bytesthread.com',
   salesEmail: 'sales@bytesthread.com',
   website: 'https://www.bytesthread.com',
+  linkedin: 'https://www.linkedin.com/company/104411391',
 }
 
 export const stats = [
@@ -114,37 +115,6 @@ export const products = [
       'Online ML predictor: self-improving logistic regression, updates on every fill',
       '8-layer pre-trade risk engine with hot-reload via SIGHUP — no restart needed',
       'EOD GenAI analyst auto-tunes bot parameters with guardrails and audit trail',
-      'POSIX SHM SPSC rings — P99 OMS intent-to-route target under 100 microseconds',
-      'React dashboard with 10 workspaces: Strategy, Predictor, Risk, Latency, Reports',
-    ],
-    strategies: [
-      'Mean Reversion (Z-Score Entry/Exit, Quarter-Kelly Sizing)',
-      'Momentum (EWM Direction Following)',
-      'Opening Range Breakout (ORB)',
-      'Gap Fade / Gap-and-Go',
-      'VWAP Reversion (OFI-Confirmed)',
-      'Market-on-Close Rebalance (MOC)',
-      'Kalman Pair Trading (Cointegration-Gated)',
-    ],
-    tech: ['C++20', 'Ollama LLM', 'IBKR TWS', 'Alpaca', 'POSIX SHM', 'React Dashboard'],
-  },
-  {
-    id: 'aitrading',
-    title: 'Ultra Trading Platform',
-    subtitle: 'AI-Driven Intraday Algorithmic Trading — IBKR, Alpaca & Any Broker',
-    category: 'AI / Equities / Multi-Broker',
-    badge: 'C++20 · Local AI',
-    color: 'accent',
-    icon: 'Brain',
-    headline: 'Self-Improving AI Bots. Local LLM. Zero Cloud Dependency.',
-    description:
-      'A production-grade C++20 algorithmic trading platform with AI-driven bot management connecting to Interactive Brokers, Alpaca, and any configurable broker. Local Ollama LLM analyses daily performance and autonomously tunes bot parameters — no cloud AI, no API fees, no data leaks. P99 OMS latency target under 100 microseconds.',
-    bullets: [
-      'Connects to IBKR TWS, Alpaca, Alpha Vantage, CSV replay, and synthetic feeds',
-      'Local Ollama AI (deepseek-r1:14b) — zero cloud dependency, zero API fees, data never leaves your server',
-      'Online ML predictor: self-improving logistic regression, updates on every fill',
-      '8-layer pre-trade risk engine with hot-reload via SIGHUP — no restart needed',
-      'EOD GenAI analyst auto-tunes bot parameters with guardrails and full audit trail',
       'POSIX SHM SPSC rings — P99 OMS intent-to-route target under 100 microseconds',
       'React dashboard with 10 workspaces: Strategy, Predictor, Risk, Latency, Reports',
     ],

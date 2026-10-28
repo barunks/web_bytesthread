@@ -2,6 +2,14 @@ import { Link } from 'react-router-dom'
 import { Mail, Globe } from 'lucide-react'
 import { navLinks, company } from '../data/content'
 
+const LinkedInIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+    <rect x="2" y="9" width="4" height="12"/>
+    <circle cx="4" cy="4" r="2"/>
+  </svg>
+)
+
 export default function Footer() {
   return (
     <footer className="bg-surface border-t border-cyan-500/10 mt-0">
@@ -53,6 +61,9 @@ export default function Footer() {
               </a>
               <a href={company.website} className="flex items-center gap-2.5 text-sm text-slate-400 hover:text-cyan-400 transition-colors">
                 <Globe size={14} className="text-cyan-500" /> www.bytesthread.com
+              </a>
+              <a href={company.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-sm text-slate-400 hover:text-cyan-400 transition-colors">
+                <LinkedInIcon /> LinkedIn
               </a>
             </div>
           </div>

@@ -1,378 +1,312 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ArrowRight, Zap, Clock, Layers, Lock, Globe, Activity } from 'lucide-react'
+import { ArrowRight, Zap, Shield, TrendingUp, Globe, CheckCircle } from 'lucide-react'
 import FadeIn from '../components/FadeIn'
-import ProductCard from '../components/ProductCard'
-import { products } from '../data/content'
 
-const hftProduct = products.find((p) => p.id === 'ultrafasthft')!
-const fxProduct = products.find((p) => p.id === 'fxtrading')!
-
-const latencyMetrics = [
-  { metric: 'p50 Tick-to-Trade', value: '<5 μs', highlight: true },
-  { metric: 'p99 End-to-End', value: '<20 μs', highlight: true },
-  { metric: 'SPSC Ring p50', value: '700 ns', highlight: false },
-  { metric: 'OMS Risk Gate p50', value: '100 ns', highlight: false },
-  { metric: 'Aeron IPC p50', value: '<1 μs', highlight: false },
-  { metric: 'Replay Determinism', value: '100%', highlight: false },
+const outcomes = [
+  { value: '<5μs', label: 'Tick-to-Trade', sub: 'Measured on live hardware' },
+  { value: '700ns', label: 'Internal Routing', sub: 'Order to risk gate' },
+  { value: '100ns', label: 'Risk Clearance', sub: 'All 7 checks combined' },
+  { value: '<20μs', label: 'FX End-to-End', sub: 'Quote receipt to ACK' },
+  { value: '100%', label: 'Replay Fidelity', sub: 'Deterministic audit trail' },
+  { value: '5+', label: 'Venues Live', sub: 'Simultaneous execution' },
 ]
 
-const transports = [
+const businessValue = [
   {
-    name: 'Aeron Sequencer',
-    tag: 'Primary IPC',
-    desc: 'Reliable UDP multicast and IPC via Aeron for ultra-low-latency pub/sub between microservices. Sub-microsecond p50 on loopback.',
-    color: 'cyan',
+    icon: TrendingUp,
+    color: '#22d3ee',
+    title: 'Capture More Alpha',
+    desc: 'Every microsecond of latency advantage translates directly into better fill prices, tighter spreads captured, and more arbitrage windows exploited before competitors react.',
   },
   {
-    name: 'Memory-Mapped Ring',
-    tag: 'SPSC',
-    desc: 'POSIX shm_open + mmap SPSC ring buffers, cache-line aligned to 64 bytes. Zero-copy, zero-allocation on the hot path.',
-    color: 'cyan',
+    icon: Shield,
+    color: '#00ff88',
+    title: 'Trade with Confidence',
+    desc: 'Seven independent risk guardrails clear every order in under 100 nanoseconds — position limits, price collars, rate limiters, and a hardware kill switch that never misses.',
   },
   {
-    name: 'Unix Domain Socket',
-    tag: 'UDS',
-    desc: 'UDS for co-located process communication where kernel-bypass is not required. Lower overhead than TCP for same-host services.',
-    color: 'accent',
+    icon: Globe,
+    color: '#a78bfa',
+    title: 'Any Market, Any Protocol',
+    desc: 'Connect to equities, FX spot, NDFs, futures, and options across any venue. The platform adapts to your exchange — not the other way around.',
   },
   {
-    name: 'TCP / Raw Socket',
-    tag: 'External',
-    desc: 'Kernel-bypass TCP via DPDK or standard sockets for exchange connectivity. Configurable per venue based on co-location constraints.',
-    color: 'accent',
-  },
-  {
-    name: 'FIX Protocol',
-    tag: 'FIX-Agnostic',
-    desc: 'Protocol-agnostic FIX adapter layer — supports any FIX version, proprietary binary, or REST/WebSocket. Zero-copy message parsing, no dynamic allocation.',
-    color: 'purple',
+    icon: Zap,
+    color: '#f59e0b',
+    title: 'Proven in Production',
+    desc: 'Every performance number is measured on real hardware under live market conditions. No simulated benchmarks. No marketing estimates. Reproducible on your infrastructure.',
   },
 ]
 
-const microservices = [
-  { step: '01', name: 'Market Data Gateway', desc: 'Normalises raw feed from exchange WebSocket / FIX / binary into internal tick events. Publishes via Aeron multicast to all subscribers simultaneously.' },
-  { step: '02', name: 'Strategy Engine', desc: 'Consumes normalised ticks from the Aeron subscriber ring. Runs signal logic, generates order intents. CPU-pinned, NUMA-aware, zero heap on hot path.' },
-  { step: '03', name: 'Order Management System', desc: 'Receives intents via SPSC memory-mapped ring. Enforces 7-layer pre-trade risk synchronously in 100 ns. Sequences orders with monotonic IDs.' },
-  { step: '04', name: 'Execution Gateway', desc: 'Translates OMS orders to venue protocol (FIX, binary, REST). Manages ACK/NACK lifecycle. Publishes fills back via Aeron to OMS and Strategy.' },
-  { step: '05', name: 'Risk & Telemetry Bus', desc: 'Async UDS bus for P&L accounting, drawdown monitoring, and kill-switch propagation. Writes to time-series DB via ILP for nanosecond-precision audit trail.' },
+const platforms = [
+  {
+    name: 'UltraFastHFT',
+    tag: 'Equities · Futures · Multi-Asset',
+    color: '#22d3ee',
+    headline: 'The fastest path from market signal to executed order.',
+    pitch: 'Built for prop desks and HFT firms that compete on speed. UltraFastHFT delivers a complete execution stack — market data, strategy, order management, and risk — on a single zero-copy data path. Deploy on co-located bare metal or cloud VMs with identical performance characteristics.',
+    outcomes: [
+      'Capture price dislocations before slower participants react',
+      'Run 7 simultaneous strategy types with independent risk budgets',
+      'Full deterministic replay for regulatory audit and post-trade analysis',
+      'Deploy in hours, not months — production-ready from day one',
+    ],
+  },
+  {
+    name: 'FX Nexus',
+    tag: 'FX Spot · NDF · Swaps · Options',
+    color: '#a78bfa',
+    headline: 'Institutional FX execution without the institutional overhead.',
+    pitch: 'FX Nexus connects your trading desk to any venue via any protocol — FIX, binary, REST, or WebSocket — with end-to-end latency under 20 microseconds. Full RFQ and streaming quote workflows, CBBO aggregation, VWAP and TWAP execution, and a live Nexus Dashboard for P&L and position monitoring.',
+    outcomes: [
+      'Quote and execute Spot, NDF, FX Swaps, and Vanilla Options from one platform',
+      'Streaming quotes with configurable validity windows and auto-reject on stale prices',
+      'CBBO aggregation across multiple liquidity providers for best execution',
+      'Swap any venue adapter without touching core trading logic',
+    ],
+  },
 ]
 
 const riskLayers = [
-  { layer: 'L0', title: 'Strategy-Local Limits', desc: 'Quote count, inventory target, position sizing — enforced inside the strategy thread before intent is emitted.' },
-  { layer: 'L1', title: 'Synchronous Pre-Trade Risk', desc: 'Kill switch, price collar, GCRA rate limiter, lot compliance, notional limits — 100 ns gate in OMS hot path.' },
-  { layer: 'L2', title: 'Portfolio & Drawdown Controller', desc: 'Realised/unrealised P&L, gross/net exposure, max drawdown threshold → atomic mass-cancel via Aeron broadcast.' },
+  { id: 'L0', name: 'Strategy Limits', desc: 'Position sizing and inventory targets enforced before any order intent is generated.' },
+  { id: 'L1', name: 'Kill Switch', desc: 'Instant halt. Hardware-enforced. Survives configuration reload.' },
+  { id: 'L2', name: 'Price Collar', desc: 'Rejects orders priced outside a configurable band vs last market quote.' },
+  { id: 'L3', name: 'Rate Limiter', desc: 'Maximum orders per second enforced atomically — no burst through.' },
+  { id: 'L4', name: 'Notional Cap', desc: 'Per-order and per-session notional limits. Cannot be overridden by strategy.' },
+  { id: 'L5', name: 'Exposure Gate', desc: 'Portfolio-wide gross and net exposure monitored in real time.' },
+  { id: 'L6', name: 'Drawdown Stop', desc: 'Realised and unrealised P&L tracked per bot and portfolio. Auto-cancel on breach.' },
 ]
 
-const fxCapabilities = [
-  { icon: Globe, title: 'RFQ & RFS Workflows', desc: 'Full request-for-quote and request-for-stream lifecycle. Streaming quote support with configurable validity windows and auto-reject on stale prices.' },
-  { icon: Activity, title: 'IQ Engine — CBBO / VWAP / TWAP', desc: 'Pluggable execution intelligence rules: Composite Best Bid/Offer aggregation, VWAP Slice, TWAP Slice, and custom rule sets per instrument class.' },
-  { icon: Layers, title: 'Instrument Coverage', desc: 'FX Spot, NDF, FX Swaps, Vanilla Options. Configurable fixing source, settlement calendar, and notional currency per instrument.' },
-  { icon: Zap, title: 'Protocol-Agnostic Connectivity', desc: 'FIX (any version), proprietary binary, REST/WebSocket adapters. Venue adapter is a hot-swappable plugin — no core changes required.' },
-]
-
-const hotPathTechniques = [
-  {
-    label: 'Kernel-Bypass',
-    tag: 'DPDK / SHM',
-    desc: 'POSIX shm_open + mmap and DPDK eliminate kernel entry on the hot path. Zero context switches between market data receipt and order submission.',
-  },
-  {
-    label: 'CPU Affinity Pinning',
-    tag: 'NUMA-Aware',
-    desc: 'Every hot-path thread is isolated on a dedicated core via pthread_setaffinity. NUMA-local allocation ensures memory never crosses a socket boundary.',
-  },
-  {
-    label: 'Cache-Line Optimisation',
-    tag: 'alignas(64)',
-    desc: 'All shared structures are aligned to 64-byte cache lines. Hot and cold fields are separated into distinct structs to maximise L1/L2 hit rate.',
-  },
-  {
-    label: 'Cache Coherence Control',
-    tag: 'SPSC Ownership',
-    desc: 'SPSC queues enforce single-writer / single-reader ownership. No false sharing, no MESI invalidation storms — cache lines stay in Modified state on the owning core.',
-  },
-  {
-    label: 'Branch Prediction',
-    tag: '[[likely]] / [[unlikely]]',
-    desc: 'Hot-path conditionals are annotated with C++23 [[likely]]/[[unlikely]] and ordered by execution probability to maximise branch predictor hit rate.',
-  },
-  {
-    label: 'SIMD Acceleration',
-    tag: 'AVX2 / AVX-512',
-    desc: 'Price comparison, risk limit checks, and message serialisation use AVX2/AVX-512 intrinsics to process multiple values per clock cycle.',
-  },
-  {
-    label: 'Zero-Copy',
-    tag: 'No memcpy',
-    desc: 'Market data is written once into shared memory and read in-place by all consumers. No intermediate copies between exchange feed and strategy logic.',
-  },
-  {
-    label: 'Zero-Allocation',
-    tag: 'No heap',
-    desc: 'Thread-local object pools pre-allocate all order and event objects at startup. The hot path makes zero calls to malloc/new during market hours.',
-  },
-  {
-    label: 'Zero-Syscall',
-    tag: 'User-space only',
-    desc: 'From tick receipt to order dispatch, the critical path makes no system calls. All IPC is via memory-mapped rings or Aeron IPC — pure user-space.',
-  },
+const fxWorkflows = [
+  { label: 'RFQ', desc: 'Request-for-Quote — single dealer or multi-dealer price discovery with configurable response windows.' },
+  { label: 'RFS', desc: 'Request-for-Stream — continuous streaming quotes with live spread and validity management.' },
+  { label: 'CBBO', desc: 'Composite Best Bid/Offer — aggregates liquidity across providers for best execution.' },
+  { label: 'VWAP Slice', desc: 'Volume-weighted execution sliced across the session to minimise market impact.' },
+  { label: 'TWAP Slice', desc: 'Time-weighted execution for predictable, schedule-driven order flow.' },
 ]
 
 export default function HftFx() {
-  const [activeTransport, setActiveTransport] = useState(0)
+  const [activePlatform, setActivePlatform] = useState(0)
+  const [activeRisk, setActiveRisk] = useState<number | null>(null)
 
   return (
-    <div className="pt-24" style={{ backgroundColor: '#020408' }}>
+    <div style={{ backgroundColor: '#020408' }}>
 
-      {/* ── HERO ── */}
-      <section className="relative min-h-[70vh] flex items-center overflow-hidden">
-        <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
-          {[
-            { src: '/images/hft-screen.webp', label: 'HFT Engine' },
-            { src: '/images/hft-datacenter.webp', label: 'Data Center' },
-            { src: '/images/equities.webp', label: 'Equities' },
-            { src: '/images/fx-trading.webp', label: 'FX Trading' },
-          ].map((img, i) => (
-            <div key={i} className="overflow-hidden">
-              <img src={img.src} alt={img.label} className="w-full h-full object-cover" style={{ filter: 'brightness(0.22) saturate(1.5)' }} />
-            </div>
-          ))}
+      {/* ── ANIMATED HERO ── */}
+      <section className="relative min-h-screen flex items-center overflow-hidden pt-24">
+
+        {/* Animated CSS background */}
+        <div className="animated-hero-bg">
+          {/* Base image grid */}
+          <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
+            {[
+              '/images/hft-screen.webp',
+              '/images/hft-datacenter.webp',
+              '/images/equities.webp',
+              '/images/fx-trading.webp',
+            ].map((src, i) => (
+              <div key={i} className="overflow-hidden">
+                <img src={src} alt="" className="w-full h-full object-cover"
+                  style={{ filter: 'brightness(0.18) saturate(1.6)', transform: 'scale(1.05)', transition: 'transform 8s ease' }} />
+              </div>
+            ))}
+          </div>
+
+          {/* Gradient overlays */}
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(2,4,8,0.5) 0%, rgba(2,4,8,0.65) 55%, rgba(2,4,8,1) 100%)' }} />
+          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(6,182,212,0.2) 0%, transparent 70%)' }} />
+
+          {/* Animated orbs */}
+          <div className="orb" style={{ width: 600, height: 600, top: '-15%', left: '-10%', background: 'radial-gradient(circle, rgba(6,182,212,0.1) 0%, transparent 70%)', animationDelay: '0s', animationDuration: '7s' }} />
+          <div className="orb" style={{ width: 400, height: 400, bottom: '10%', right: '-5%', background: 'radial-gradient(circle, rgba(0,255,136,0.08) 0%, transparent 70%)', animationDelay: '2s', animationDuration: '9s' }} />
+          <div className="orb" style={{ width: 300, height: 300, top: '40%', right: '20%', background: 'radial-gradient(circle, rgba(167,139,250,0.07) 0%, transparent 70%)', animationDelay: '4s', animationDuration: '11s' }} />
+
+          {/* Scanline */}
+          <div className="scanline" />
+
+          {/* Animated grid */}
+          <div className="grid-pan" />
         </div>
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(2,4,8,0.55) 0%, rgba(2,4,8,0.72) 60%, rgba(2,4,8,1) 100%)' }} />
-        <div className="absolute inset-0 grid-bg opacity-25" />
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 60% 40% at 50% 0%, rgba(6,182,212,0.18) 0%, transparent 70%)' }} />
 
-        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-24">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-            <span className="text-xs font-mono text-brand-400 uppercase tracking-widest">HFT & FX Trading</span>
-            <h1 className="text-4xl md:text-6xl font-black text-white mt-3 mb-5 leading-tight">
-              Sub-Microsecond<br />
-              <span className="text-gradient">Execution Infrastructure</span>
+        {/* Hero content */}
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-20 w-full">
+          <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full mb-8"
+              style={{ border: '1px solid rgba(6,182,212,0.35)', backgroundColor: 'rgba(6,182,212,0.08)', backdropFilter: 'blur(8px)' }}
+            >
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+              <span className="text-xs font-mono text-cyan-400">HFT · FX · Equities · Futures · Multi-Asset</span>
+            </motion.div>
+
+            <h1 className="text-5xl md:text-7xl font-black text-white leading-none mb-6">
+              Win the Race<br />
+              <span className="text-gradient">Before It Starts</span>
             </h1>
-            <p className="text-lg text-slate-400 max-w-2xl leading-relaxed mb-4">
-              Native OS &amp; cloud-deployable trading platforms built in C++23. Every solution ships with a
-              <span className="text-brand-400 font-semibold"> multi-transport messaging architecture</span> — Aeron Sequencer,
-              memory-mapped SPSC rings, UDS, TCP, and FIX — selected per hop for minimum latency.
+
+            <p className="text-xl text-slate-300 max-w-2xl leading-relaxed mb-4">
+              BytesThread builds <span className="text-cyan-400 font-semibold">execution infrastructure</span> for trading firms
+              that compete on speed. When your order reaches the exchange microseconds ahead of the market,
+              you capture better prices, tighter spreads, and more opportunities — every session.
             </p>
-            <p className="text-sm text-slate-500 max-w-2xl mb-8">
-              Built for HFT desks, prop trading firms, and institutional FX operations that cannot tolerate jitter.
+            <p className="text-slate-500 max-w-xl mb-10">
+              Trusted by prop desks, HFT firms, and institutional FX operations across equities, futures, FX, and crypto.
             </p>
-            <div className="flex flex-wrap gap-4">
-              <Link to="/contact" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white transition-all glow-blue" style={{ backgroundColor: '#06b6d4' }}>
+
+            <div className="flex flex-wrap gap-4 mb-16">
+              <Link to="/contact"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-black transition-all glow-cyan"
+                style={{ backgroundColor: '#22d3ee' }}>
                 Request a Demo <ArrowRight size={16} />
               </Link>
-              <Link to="/about" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all" style={{ border: '1px solid rgba(6,182,212,0.3)', color: '#22d3ee' }}>
+              <Link to="/about"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold transition-all"
+                style={{ border: '1px solid rgba(6,182,212,0.3)', color: '#22d3ee' }}>
                 Our Story
               </Link>
+            </div>
+
+            {/* Outcome metrics */}
+            <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+              {outcomes.map((o, i) => (
+                <motion.div key={i}
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.08 }}
+                  style={{ backgroundColor: 'rgba(6,12,24,0.75)', border: '1px solid rgba(6,182,212,0.2)', borderRadius: '12px', padding: '14px 10px', textAlign: 'center', backdropFilter: 'blur(12px)' }}>
+                  <div style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: '1.1rem', color: '#22d3ee', lineHeight: 1 }}>{o.value}</div>
+                  <div style={{ fontSize: '0.7rem', color: '#fff', fontWeight: 600, marginTop: '4px' }}>{o.label}</div>
+                  <div style={{ fontSize: '0.6rem', color: '#475569', marginTop: '2px' }}>{o.sub}</div>
+                </motion.div>
+              ))}
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* ── LATENCY METRICS ── */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
-        <FadeIn className="mb-10">
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Clock size={20} className="text-brand-400" /> Measured Performance
-          </h2>
-          <p className="text-slate-400 text-sm mt-1">Real numbers from production builds on bare-metal Linux x86-64 — not marketing estimates.</p>
-        </FadeIn>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {latencyMetrics.map((m, i) => (
-            <FadeIn key={i} delay={i * 0.07}>
-              <div style={{ backgroundColor: '#080f1e', border: '1px solid rgba(6,182,212,0.18)', borderRadius: '12px', padding: '20px', textAlign: 'center', transition: 'border-color 0.2s' }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(6,182,212,0.5)')}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(6,182,212,0.18)')}
-              >
-                <div style={{ fontSize: '1.6rem', fontWeight: 800, fontFamily: 'JetBrains Mono, monospace', color: m.highlight ? '#22d3ee' : '#00ff88' }}>
-                  {m.value}
-                </div>
-                <div style={{ fontSize: '0.72rem', color: '#94a3b8', marginTop: '6px' }}>{m.metric}</div>
-              </div>
-            </FadeIn>
-          ))}
-        </div>
-      </section>
-
-      {/* ── HOT PATH OPTIMISATIONS ── */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-16">
-        <FadeIn className="mb-8">
-          <span className="text-xs font-mono uppercase tracking-widest" style={{ color: '#22d3ee' }}>Engineering Depth</span>
-          <h2 className="text-2xl font-bold text-white mt-2 flex items-center gap-2">
-            <Zap size={20} className="text-brand-400" /> Hot Path Optimisation Techniques
-          </h2>
-          <p className="text-sm mt-2 max-w-2xl" style={{ color: '#64748b' }}>
-            Nine specific techniques applied to every nanosecond-sensitive code path. Each one is a deliberate engineering decision, not a default.
-          </p>
-        </FadeIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {hotPathTechniques.map((t, i) => (
-            <FadeIn key={i} delay={i * 0.05}>
-              <div
-                style={{ backgroundColor: '#080f1e', border: '1px solid rgba(6,182,212,0.14)', borderRadius: '12px', padding: '18px', height: '100%', transition: 'border-color 0.2s, background-color 0.2s' }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(6,182,212,0.5)'; e.currentTarget.style.backgroundColor = '#0a1525' }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(6,182,212,0.14)'; e.currentTarget.style.backgroundColor = '#080f1e' }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                  <span style={{ fontWeight: 700, color: '#fff', fontSize: '0.875rem' }}>{t.label}</span>
-                  <span style={{ fontSize: '0.62rem', fontFamily: 'monospace', padding: '2px 8px', borderRadius: '999px', backgroundColor: 'rgba(0,255,136,0.08)', border: '1px solid rgba(0,255,136,0.2)', color: '#00ff88', whiteSpace: 'nowrap', flexShrink: 0, marginLeft: '8px' }}>{t.tag}</span>
-                </div>
-                <p style={{ fontSize: '0.78rem', color: '#64748b', lineHeight: 1.6 }}>{t.desc}</p>
-              </div>
-            </FadeIn>
-          ))}
-        </div>
-      </section>
-
-      {/* ── MESSAGING TRANSPORT ARCHITECTURE ── */}
-      <section style={{ backgroundColor: '#060c18', borderTop: '1px solid rgba(6,182,212,0.1)', borderBottom: '1px solid rgba(6,182,212,0.1)', padding: '64px 0' }}>
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <FadeIn className="mb-10">
-            <span className="text-xs font-mono text-brand-400 uppercase tracking-widest">Native OS &amp; Cloud</span>
-            <h2 className="text-2xl font-bold text-white mt-2 flex items-center gap-2">
-              <Layers size={20} className="text-brand-400" /> Multi-Transport Messaging Architecture
+      {/* ── BUSINESS VALUE ── */}
+      <section className="py-24 px-4 sm:px-6" style={{ backgroundColor: '#060c18', borderTop: '1px solid rgba(6,182,212,0.08)' }}>
+        <div className="max-w-5xl mx-auto">
+          <FadeIn className="text-center mb-14">
+            <span className="text-xs font-mono text-cyan-500 uppercase tracking-widest">Why It Matters</span>
+            <h2 className="text-3xl md:text-4xl font-black text-white mt-2">
+              Speed Is a Business Advantage
             </h2>
-            <p className="text-slate-400 text-sm mt-2 max-w-2xl">
-              Every transport is selected per hop based on co-location topology, latency budget, and reliability requirements.
-              The same platform runs on bare-metal Linux, cloud VMs, or hybrid co-lo — with zero code changes.
+            <p className="text-slate-400 mt-3 max-w-xl mx-auto">
+              In electronic markets, the firm with the fastest, most reliable execution infrastructure consistently outperforms. Here's what that means in practice.
+            </p>
+          </FadeIn>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {businessValue.map((v, i) => (
+              <FadeIn key={i} delay={i * 0.08}>
+                <div style={{ backgroundColor: '#07101f', border: '1px solid rgba(6,182,212,0.12)', borderRadius: '16px', padding: '28px', height: '100%', transition: 'all 0.25s' }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(6,182,212,0.45)'; e.currentTarget.style.backgroundColor = '#0a1525' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(6,182,212,0.12)'; e.currentTarget.style.backgroundColor = '#07101f' }}>
+                  <div style={{ width: '44px', height: '44px', borderRadius: '12px', backgroundColor: v.color + '18', border: `1px solid ${v.color}35`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px' }}>
+                    <v.icon size={20} style={{ color: v.color }} />
+                  </div>
+                  <h3 style={{ fontWeight: 700, color: '#fff', fontSize: '1rem', marginBottom: '8px' }}>{v.title}</h3>
+                  <p style={{ fontSize: '0.85rem', color: '#64748b', lineHeight: 1.7 }}>{v.desc}</p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PLATFORM SELECTOR ── */}
+      <section className="py-24 px-4 sm:px-6">
+        <div className="max-w-5xl mx-auto">
+          <FadeIn className="mb-12">
+            <span className="text-xs font-mono text-cyan-500 uppercase tracking-widest">Our Platforms</span>
+            <h2 className="text-3xl font-black text-white mt-2">Two Platforms. One Standard.</h2>
+            <p className="text-slate-400 mt-2 max-w-xl">
+              Whether you're running a high-frequency equities desk or an institutional FX operation, we have a production-ready platform built for your market.
             </p>
           </FadeIn>
 
-          {/* Transport selector */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {transports.map((t, i) => (
-              <button
-                key={i}
-                onClick={() => setActiveTransport(i)}
+          {/* Tab selector */}
+          <div className="flex gap-3 mb-8">
+            {platforms.map((p, i) => (
+              <button key={i} onClick={() => setActivePlatform(i)}
                 style={{
-                  padding: '6px 16px',
-                  borderRadius: '999px',
-                  fontSize: '0.75rem',
-                  fontFamily: 'JetBrains Mono, monospace',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'all 0.2s',
-                  border: activeTransport === i ? '1px solid #06b6d4' : '1px solid rgba(6,182,212,0.2)',
-                  backgroundColor: activeTransport === i ? 'rgba(6,182,212,0.15)' : 'transparent',
-                  color: activeTransport === i ? '#22d3ee' : '#64748b',
-                }}
-              >
-                {t.name}
+                  padding: '10px 24px', borderRadius: '10px', fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', transition: 'all 0.2s',
+                  border: activePlatform === i ? `1px solid ${p.color}60` : '1px solid rgba(255,255,255,0.08)',
+                  backgroundColor: activePlatform === i ? p.color + '15' : 'transparent',
+                  color: activePlatform === i ? p.color : '#64748b',
+                }}>
+                {p.name}
               </button>
             ))}
           </div>
 
-          {/* Active transport detail */}
-          <FadeIn key={activeTransport}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6" style={{ backgroundColor: '#080f1e', border: '1px solid rgba(6,182,212,0.25)', borderRadius: '16px', padding: '28px', alignItems: 'center' }}>
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-                  <span style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>{transports[activeTransport].name}</span>
-                  <span style={{ padding: '2px 10px', borderRadius: '999px', fontSize: '0.68rem', fontFamily: 'monospace', backgroundColor: 'rgba(6,182,212,0.12)', border: '1px solid rgba(6,182,212,0.3)', color: '#22d3ee' }}>
-                    {transports[activeTransport].tag}
-                  </span>
-                </div>
-                <p style={{ color: '#94a3b8', fontSize: '0.875rem', lineHeight: 1.7 }}>{transports[activeTransport].desc}</p>
-              </div>
-              {/* Pipeline diagram */}
-              <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.72rem', backgroundColor: '#020408', borderRadius: '12px', padding: '16px', border: '1px solid rgba(6,182,212,0.1)' }}>
-                <div style={{ color: '#22d3ee', marginBottom: '8px' }}>// Transport hop diagram</div>
-                {[
-                  { from: 'Market Data GW', to: 'Strategy', via: 'Aeron / Mem-Mapped Ring' },
-                  { from: 'Strategy', to: 'OMS', via: 'SPSC Ring' },
-                  { from: 'OMS', to: 'Exec GW', via: 'SPSC Ring' },
-                  { from: 'Exec GW', to: 'Exchange', via: 'TCP / FIX' },
-                ].map((hop, i) => (
-                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px', color: '#64748b' }}>
-                    <span style={{ color: '#e2e8f0' }}>{hop.from}</span>
-                    <span style={{ color: '#06b6d4' }}>→</span>
-                    <span style={{ color: '#e2e8f0' }}>{hop.to}</span>
-                    <span style={{ marginLeft: 'auto', color: i === 0 ? '#22d3ee' : '#00ff88', fontSize: '0.65rem' }}>[{hop.via}]</span>
+          <motion.div key={activePlatform} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }}>
+            <div style={{ backgroundColor: '#07101f', border: `1px solid ${platforms[activePlatform].color}25`, borderRadius: '20px', overflow: 'hidden' }}>
+              <div className="grid grid-cols-1 lg:grid-cols-2">
+                {/* Image */}
+                <div className="relative" style={{ minHeight: '320px' }}>
+                  <img
+                    src={activePlatform === 0 ? '/images/hft-screen.webp' : '/images/fx-trading.webp'}
+                    alt={platforms[activePlatform].name}
+                    className="w-full h-full object-cover"
+                    style={{ filter: `brightness(0.4) saturate(1.8) hue-rotate(${activePlatform === 0 ? '170' : '240'}deg)` }}
+                  />
+                  <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, transparent 50%, rgba(7,16,31,1) 100%)' }} />
+                  <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 60%, rgba(7,16,31,0.9) 100%)' }} />
+                  <div className="absolute top-4 left-4">
+                    <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', padding: '4px 12px', borderRadius: '999px', backgroundColor: platforms[activePlatform].color + '18', border: `1px solid ${platforms[activePlatform].color}40`, color: platforms[activePlatform].color }}>
+                      {platforms[activePlatform].tag}
+                    </span>
                   </div>
-                ))}
+                </div>
+
+                {/* Content */}
+                <div style={{ padding: '36px' }}>
+                  <h3 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#fff', marginBottom: '8px' }}>{platforms[activePlatform].name}</h3>
+                  <p style={{ fontSize: '0.9rem', color: platforms[activePlatform].color, fontWeight: 600, marginBottom: '16px' }}>{platforms[activePlatform].headline}</p>
+                  <p style={{ fontSize: '0.85rem', color: '#64748b', lineHeight: 1.75, marginBottom: '20px' }}>{platforms[activePlatform].pitch}</p>
+                  <ul style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px' }}>
+                    {platforms[activePlatform].outcomes.map((o, i) => (
+                      <li key={i} style={{ display: 'flex', gap: '10px', fontSize: '0.85rem', color: '#cbd5e1' }}>
+                        <CheckCircle size={15} style={{ color: platforms[activePlatform].color, flexShrink: 0, marginTop: '2px' }} />
+                        {o}
+                      </li>
+                    ))}
+                  </ul>
+                  <Link to="/contact"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-black transition-all"
+                    style={{ backgroundColor: platforms[activePlatform].color }}>
+                    Discuss This Platform <ArrowRight size={15} />
+                  </Link>
+                </div>
               </div>
             </div>
-          </FadeIn>
-
-          {/* All transports grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-            {transports.map((t, i) => (
-              <FadeIn key={i} delay={i * 0.07}>
-                <div
-                  onClick={() => setActiveTransport(i)}
-                  style={{
-                    backgroundColor: '#080f1e',
-                    border: activeTransport === i ? '1px solid rgba(6,182,212,0.5)' : '1px solid rgba(6,182,212,0.12)',
-                    borderRadius: '12px',
-                    padding: '18px',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s',
-                  }}
-                  onMouseEnter={e => { if (activeTransport !== i) e.currentTarget.style.borderColor = 'rgba(6,182,212,0.3)' }}
-                  onMouseLeave={e => { if (activeTransport !== i) e.currentTarget.style.borderColor = 'rgba(6,182,212,0.12)' }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                    <span style={{ fontWeight: 700, color: '#fff', fontSize: '0.875rem' }}>{t.name}</span>
-                    <span style={{ fontSize: '0.65rem', fontFamily: 'monospace', padding: '2px 8px', borderRadius: '999px', backgroundColor: 'rgba(6,182,212,0.1)', color: '#22d3ee', border: '1px solid rgba(6,182,212,0.2)', whiteSpace: 'nowrap' }}>{t.tag}</span>
-                  </div>
-                  <p style={{ fontSize: '0.78rem', color: '#64748b', lineHeight: 1.6 }}>{t.desc}</p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* ── PRODUCTS ── */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
-        <FadeIn className="mb-8">
-          <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Zap size={20} className="text-brand-400" /> Our HFT &amp; FX Platforms
-          </h2>
-        </FadeIn>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <ProductCard {...hftProduct} index={0} />
-          <ProductCard {...fxProduct} index={1} />
-        </div>
-      </section>
-
-      {/* ── FX IMAGE BANNER ── */}
-      <section className="relative overflow-hidden">
-        <img src="/images/fx-trading.webp" alt="FX Trading" className="w-full object-cover" style={{ height: '220px', filter: 'brightness(0.28) saturate(1.6) hue-rotate(170deg)' }} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(2,4,8,0.92) 0%, rgba(2,4,8,0.5) 50%, rgba(2,4,8,0.92) 100%)' }} />
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-          <span className="text-xs font-mono uppercase tracking-widest mb-2" style={{ color: '#22d3ee' }}>FX Nexus Platform</span>
-          <h3 className="text-2xl md:text-3xl font-black text-white">Protocol-Agnostic. Sub-20μs End-to-End.</h3>
-          <p className="text-sm mt-2 max-w-xl" style={{ color: '#94a3b8' }}>RFQ / RFS · CBBO · VWAP Slice · TWAP Slice · Spot · NDF · FX Swaps · Vanilla Options</p>
-        </div>
-      </section>
-
-      {/* ── MICROSERVICES PIPELINE ── */}
-      <section style={{ backgroundColor: '#060c18', borderTop: '1px solid rgba(6,182,212,0.1)', borderBottom: '1px solid rgba(6,182,212,0.1)', padding: '64px 0' }}>
+      {/* ── FX WORKFLOWS ── */}
+      <section style={{ backgroundColor: '#060c18', borderTop: '1px solid rgba(167,139,250,0.08)', borderBottom: '1px solid rgba(167,139,250,0.08)', padding: '80px 0' }}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <FadeIn className="mb-10">
-            <span className="text-xs font-mono uppercase tracking-widest" style={{ color: '#22d3ee' }}>Microservices Architecture</span>
-            <h2 className="text-2xl font-bold text-white mt-2 flex items-center gap-2">
-              <Layers size={20} className="text-brand-400" /> End-to-End Data Path
-            </h2>
-            <p className="text-sm mt-2 max-w-2xl" style={{ color: '#94a3b8' }}>
-              Each service is an independent process, CPU-pinned and NUMA-aware. Inter-service communication uses the lowest-latency transport available for that hop.
+            <span className="text-xs font-mono uppercase tracking-widest" style={{ color: '#a78bfa' }}>FX Nexus</span>
+            <h2 className="text-2xl font-black text-white mt-2">Every FX Workflow, Out of the Box</h2>
+            <p className="text-slate-400 text-sm mt-2 max-w-xl">
+              From single-dealer RFQ to multi-provider CBBO aggregation — FX Nexus handles the full execution lifecycle for Spot, NDF, Swaps, and Options.
             </p>
           </FadeIn>
-          <div className="space-y-3">
-            {microservices.map((s, i) => (
-              <FadeIn key={i} delay={i * 0.08}>
-                <div style={{ display: 'flex', gap: '16px', backgroundColor: '#080f1e', border: '1px solid rgba(6,182,212,0.14)', borderRadius: '12px', padding: '18px 20px', transition: 'border-color 0.2s' }}
-                  onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(6,182,212,0.42)')}
-                  onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(6,182,212,0.14)')}
-                >
-                  <div style={{ minWidth: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'monospace', fontWeight: 700, fontSize: '0.72rem', color: '#22d3ee', flexShrink: 0 }}>{s.step}</div>
-                  <div>
-                    <div style={{ fontWeight: 700, color: '#fff', fontSize: '0.9rem', marginBottom: '4px' }}>{s.name}</div>
-                    <div style={{ fontSize: '0.8rem', color: '#64748b', lineHeight: 1.6 }}>{s.desc}</div>
-                  </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {fxWorkflows.map((w, i) => (
+              <FadeIn key={i} delay={i * 0.07}>
+                <div style={{ backgroundColor: '#07101f', border: '1px solid rgba(167,139,250,0.12)', borderRadius: '14px', padding: '22px', height: '100%', transition: 'all 0.2s' }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(167,139,250,0.42)'; e.currentTarget.style.backgroundColor = '#0a0820' }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(167,139,250,0.12)'; e.currentTarget.style.backgroundColor = '#07101f' }}>
+                  <div style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: '1rem', color: '#a78bfa', marginBottom: '10px' }}>{w.label}</div>
+                  <p style={{ fontSize: '0.82rem', color: '#64748b', lineHeight: 1.7 }}>{w.desc}</p>
                 </div>
               </FadeIn>
             ))}
@@ -380,53 +314,30 @@ export default function HftFx() {
         </div>
       </section>
 
-      {/* ── FX CAPABILITIES ── */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
-        <FadeIn className="mb-10">
-          <span className="text-xs font-mono uppercase tracking-widest" style={{ color: '#22d3ee' }}>FX Nexus</span>
-          <h2 className="text-2xl font-bold text-white mt-2 flex items-center gap-2">
-            <Globe size={20} className="text-brand-400" /> Institutional FX Capabilities
-          </h2>
-        </FadeIn>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {fxCapabilities.map((f, i) => (
-            <FadeIn key={i} delay={i * 0.08}>
-              <div style={{ backgroundColor: '#080f1e', border: '1px solid rgba(6,182,212,0.14)', borderRadius: '14px', padding: '22px', height: '100%', transition: 'border-color 0.2s' }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(6,182,212,0.42)')}
-                onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(6,182,212,0.14)')}
-              >
-                <div style={{ width: '40px', height: '40px', borderRadius: '10px', backgroundColor: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '14px' }}>
-                  <f.icon size={18} style={{ color: '#22d3ee' }} />
-                </div>
-                <div style={{ fontWeight: 700, color: '#fff', marginBottom: '6px', fontSize: '0.9rem' }}>{f.title}</div>
-                <div style={{ fontSize: '0.8rem', color: '#64748b', lineHeight: 1.65 }}>{f.desc}</div>
-              </div>
-            </FadeIn>
-          ))}
-        </div>
-      </section>
-
-      {/* ── RISK LAYERS ── */}
-      <section style={{ backgroundColor: '#060c18', borderTop: '1px solid rgba(6,182,212,0.1)', padding: '64px 0' }}>
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+      {/* ── RISK GUARDRAILS ── */}
+      <section className="py-24 px-4 sm:px-6">
+        <div className="max-w-5xl mx-auto">
           <FadeIn className="mb-10">
-            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-              <Lock size={20} className="text-brand-400" /> 3-Layer Execution Guardrails
+            <span className="text-xs font-mono text-cyan-500 uppercase tracking-widest">Risk Management</span>
+            <h2 className="text-2xl font-black text-white mt-2">
+              Seven Guardrails. One Hundred Nanoseconds.
             </h2>
-            <p className="text-sm mt-1" style={{ color: '#94a3b8' }}>Every order intent passes through three independent risk layers before touching the exchange.</p>
+            <p className="text-slate-400 text-sm mt-2 max-w-xl">
+              Every order clears seven independent risk checks before it touches the exchange — all in under 100 nanoseconds. Your compliance team gets the controls they need without slowing down the trading desk.
+            </p>
           </FadeIn>
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {riskLayers.map((r, i) => (
-              <FadeIn key={i} delay={i * 0.1}>
-                <div style={{ display: 'flex', gap: '16px', backgroundColor: '#080f1e', border: '1px solid rgba(6,182,212,0.14)', borderRadius: '12px', padding: '20px', transition: 'border-color 0.2s' }}
-                  onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(6,182,212,0.42)')}
-                  onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(6,182,212,0.14)')}
-                >
-                  <div style={{ width: '40px', height: '40px', borderRadius: '8px', backgroundColor: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'monospace', fontWeight: 700, fontSize: '0.8rem', color: '#22d3ee', flexShrink: 0 }}>{r.layer}</div>
-                  <div>
-                    <div style={{ fontWeight: 700, color: '#fff', marginBottom: '4px' }}>{r.title}</div>
-                    <div style={{ fontSize: '0.82rem', color: '#64748b' }}>{r.desc}</div>
+              <FadeIn key={i} delay={i * 0.06}>
+                <div
+                  style={{ backgroundColor: activeRisk === i ? '#0a1525' : '#07101f', border: `1px solid ${activeRisk === i ? 'rgba(6,182,212,0.5)' : 'rgba(6,182,212,0.12)'}`, borderRadius: '14px', padding: '20px', cursor: 'default', transition: 'all 0.2s', height: '100%' }}
+                  onMouseEnter={() => setActiveRisk(i)}
+                  onMouseLeave={() => setActiveRisk(null)}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                    <span style={{ fontFamily: 'monospace', fontSize: '0.62rem', color: '#22d3ee', backgroundColor: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.3)', borderRadius: '5px', padding: '2px 7px', fontWeight: 700 }}>{r.id}</span>
+                    <span style={{ fontWeight: 700, color: '#fff', fontSize: '0.82rem' }}>{r.name}</span>
                   </div>
+                  <p style={{ fontSize: '0.78rem', color: '#475569', lineHeight: 1.65 }}>{r.desc}</p>
                 </div>
               </FadeIn>
             ))}
@@ -435,17 +346,38 @@ export default function HftFx() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="max-w-3xl mx-auto px-4 sm:px-6 py-24 text-center">
-        <FadeIn>
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Need a custom HFT or FX engine?</h2>
-          <p className="mb-8" style={{ color: '#94a3b8' }}>
-            We design and build bespoke ultra-low-latency trading systems — native OS or cloud — tailored to your asset class, transport stack, and risk requirements.
-          </p>
-          <Link to="/contact" className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white transition-all glow-blue" style={{ backgroundColor: '#06b6d4' }}>
-            Discuss Your Requirements <ArrowRight size={16} />
-          </Link>
-        </FadeIn>
+      <section className="relative py-28 px-4 sm:px-6 overflow-hidden">
+        <div className="absolute inset-0">
+          <img src="/images/hft-datacenter.webp" alt="" className="w-full h-full object-cover" style={{ filter: 'brightness(0.15) saturate(1.5) hue-rotate(180deg)' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(2,4,8,0.7), rgba(2,4,8,0.95))' }} />
+          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(6,182,212,0.12), transparent)' }} />
+          <div className="grid-pan absolute inset-0 opacity-20" />
+        </div>
+        <div className="relative z-10 max-w-3xl mx-auto text-center">
+          <FadeIn>
+            <h2 className="text-3xl md:text-5xl font-black text-white mb-5">
+              Ready to execute faster<br />
+              <span className="text-gradient">than your competition?</span>
+            </h2>
+            <p className="text-slate-400 text-lg mb-10 leading-relaxed">
+              Tell us your asset class, venue, and latency target. We'll design and deliver a production-ready execution platform — measured, not estimated.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link to="/contact"
+                className="inline-flex items-center gap-2 px-10 py-5 rounded-xl font-black text-black text-lg transition-all glow-cyan"
+                style={{ backgroundColor: '#22d3ee' }}>
+                Start the Conversation <ArrowRight size={20} />
+              </Link>
+              <Link to="/ai-trading"
+                className="inline-flex items-center gap-2 px-10 py-5 rounded-xl font-bold text-lg transition-all"
+                style={{ border: '1px solid rgba(6,182,212,0.3)', color: '#22d3ee' }}>
+                See AI Trading
+              </Link>
+            </div>
+          </FadeIn>
+        </div>
       </section>
+
     </div>
   )
 }

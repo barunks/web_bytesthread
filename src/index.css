@@ -114,6 +114,61 @@
 
 .float { animation: float 6s ease-in-out infinite; }
 
+/* Animated hero background — used on HFT, Crypto, Portfolio, About pages */
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes particleDrift {
+  0%   { transform: translateY(0px) translateX(0px) scale(1);   opacity: 0.6; }
+  33%  { transform: translateY(-18px) translateX(8px) scale(1.05); opacity: 1; }
+  66%  { transform: translateY(-8px) translateX(-6px) scale(0.97); opacity: 0.7; }
+  100% { transform: translateY(0px) translateX(0px) scale(1);   opacity: 0.6; }
+}
+@keyframes orbPulse {
+  0%, 100% { transform: scale(1);    opacity: 0.5; }
+  50%       { transform: scale(1.18); opacity: 0.9; }
+}
+@keyframes scanlineMove {
+  0%   { transform: translateY(-100%); opacity: 0; }
+  10%  { opacity: 0.06; }
+  90%  { opacity: 0.06; }
+  100% { transform: translateY(200%); opacity: 0; }
+}
+@keyframes gridPan {
+  0%   { background-position: 0px 0px; }
+  100% { background-position: 50px 50px; }
+}
+.animated-hero-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.animated-hero-bg .orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: orbPulse 6s ease-in-out infinite;
+}
+.animated-hero-bg .scanline {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(6,182,212,0.08), transparent);
+  animation: scanlineMove 8s linear infinite;
+}
+.animated-hero-bg .grid-pan {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(6,182,212,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6,182,212,0.04) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: gridPan 20s linear infinite;
+  opacity: 0.5;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #020408; }
