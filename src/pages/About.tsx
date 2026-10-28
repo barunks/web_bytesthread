@@ -105,35 +105,38 @@ export default function About() {
   return (
     <div style={{ backgroundColor: '#020408' }}>
 
-      {/* ── ANIMATED HERO ── */}
+      {/* ── HERO ── */}
       <section className="relative min-h-screen flex items-center overflow-hidden pt-24">
 
-        <div className="animated-hero-bg">
-          {/* Three-column image background */}
-          <div className="absolute inset-0 grid grid-cols-3 h-full">
-            {[
-              { src: '/images/hft-datacenter.webp', hue: 180 },
-              { src: '/images/server.webp', hue: 220 },
-              { src: '/images/analytics.webp', hue: 260 },
-            ].map((img, i) => (
-              <div key={i} className="overflow-hidden">
-                <img src={img.src} alt="" className="w-full h-full object-cover"
-                  style={{ filter: `brightness(0.18) saturate(1.6) hue-rotate(${img.hue}deg)`, transform: 'scale(1.05)' }} />
-              </div>
-            ))}
-          </div>
+        {/* Galaxy video — purple/violet tint for About identity */}
+        <video autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: 'hue-rotate(240deg) saturate(2.2) brightness(0.38)', opacity: 0.85 }}>
+          <source src="/videos/galaxy.mp4" type="video/mp4" />
+        </video>
 
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(2,4,8,0.5) 0%, rgba(2,4,8,0.65) 55%, rgba(2,4,8,1) 100%)' }} />
-          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(6,182,212,0.18) 0%, transparent 70%)' }} />
+        {/* Two images drifting diagonally at different rates — parallax feel */}
+        <img src="/images/hft-datacenter.webp" alt="" className="absolute inset-0 w-full h-full object-cover"
+          style={{
+            opacity: 0.15,
+            filter: 'saturate(2) hue-rotate(220deg) brightness(0.55)',
+            mixBlendMode: 'screen',
+            animation: 'driftDiag 20s ease-in-out infinite',
+            transformOrigin: '30% 50%',
+          }} />
+        <img src="/images/server.webp" alt="" className="absolute inset-0 w-full h-full object-cover"
+          style={{
+            opacity: 0.1,
+            filter: 'saturate(2) hue-rotate(260deg) brightness(0.55)',
+            mixBlendMode: 'screen',
+            animation: 'driftDiag 28s ease-in-out infinite reverse',
+            transformOrigin: '70% 50%',
+          }} />
 
-          {/* Animated orbs */}
-          <div className="orb" style={{ width: 700, height: 700, top: '-20%', left: '-15%', background: 'radial-gradient(circle, rgba(6,182,212,0.1) 0%, transparent 70%)', animationDuration: '9s' }} />
-          <div className="orb" style={{ width: 500, height: 500, bottom: '5%', right: '-10%', background: 'radial-gradient(circle, rgba(167,139,250,0.08) 0%, transparent 70%)', animationDelay: '3s', animationDuration: '11s' }} />
-          <div className="orb" style={{ width: 350, height: 350, top: '30%', right: '30%', background: 'radial-gradient(circle, rgba(0,255,136,0.06) 0%, transparent 70%)', animationDelay: '6s', animationDuration: '13s' }} />
-
-          <div className="scanline" />
-          <div className="grid-pan" />
-        </div>
+        {/* Depth overlays */}
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 30%, rgba(139,92,246,0.2) 0%, transparent 70%)' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(2,4,8,0.2) 0%, rgba(2,4,8,0.1) 40%, rgba(2,4,8,0.85) 85%, rgba(2,4,8,1) 100%)' }} />
+        <div className="absolute inset-0 grid-bg opacity-20" />
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-20 w-full">
           <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>

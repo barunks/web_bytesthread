@@ -110,7 +110,7 @@ export const products = [
     description:
       'A production-grade C++20 algorithmic trading platform with AI-driven bot management, connecting to Interactive Brokers, Alpaca, and any configurable broker. Local Ollama LLM (deepseek-r1, qwen3.5, llama3) analyses daily performance and autonomously tunes bot parameters — no cloud AI, no API fees, no data leaks. P99 OMS latency target under 100 microseconds.',
     bullets: [
-      'Connects to IBKR TWS, Alpaca, Alpha Vantage, CSV replay, and synthetic feeds',
+      'Connects to IBKR TWS, Alpaca, multiple market data sources, CSV replay, and synthetic feeds',
       'Local Ollama AI (deepseek-r1:14b) — zero cloud dependency, zero API fees',
       'Online ML predictor: self-improving logistic regression, updates on every fill',
       '8-layer pre-trade risk engine with hot-reload via SIGHUP — no restart needed',
@@ -160,10 +160,10 @@ export const products = [
     icon: 'Shield',
     headline: 'BNM-Compliant Risk, Compliance & Payment Platform on AWS.',
     description:
-      'A production-deployed microservices risk management platform on AWS. Features centralized database service via ElastiCache Redis message queue, multi-gateway payment processing (Razorpay, Stripe), PDF compliance certificate generation, and circuit-breaker fault tolerance.',
+      'A production-deployed microservices risk management platform on AWS. Features centralized database service via ElastiCache Redis message queue, multi-gateway payment processing, PDF compliance certificate generation, taxation reporting, and circuit-breaker fault tolerance.',
     bullets: [
       'Amazon RDS MySQL + ElastiCache Redis architecture',
-      'Multi-gateway payments: Razorpay, Stripe, Bank Transfer',
+      'Multi-gateway payment processing with automatic failover and full audit trail',
       'BNM compliance certificate generation with PDF watermarks',
       'Circuit breaker pattern — automatic failover and recovery',
       'SQL injection prevention and full audit trail logging',

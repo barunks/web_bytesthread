@@ -93,23 +93,30 @@ export default function Crypto() {
   return (
     <div style={{ backgroundColor: '#020408' }}>
 
-      {/* ── ANIMATED HERO ── */}
+      {/* ── HERO ── */}
       <section className="relative min-h-screen flex items-center overflow-hidden pt-24">
 
-        <div className="animated-hero-bg">
-          <img src="/images/crypto-trading.webp" alt="" className="absolute inset-0 w-full h-full object-cover"
-            style={{ filter: 'brightness(0.18) saturate(2.2)', transform: 'scale(1.04)' }} />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(2,4,8,0.45) 0%, rgba(2,4,8,0.6) 55%, rgba(2,4,8,1) 100%)' }} />
-          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(0,255,136,0.18) 0%, transparent 70%)' }} />
+        {/* Galaxy video — green tint */}
+        <video autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: 'hue-rotate(120deg) saturate(3) brightness(0.4)', opacity: 0.85 }}>
+          <source src="/videos/galaxy.mp4" type="video/mp4" />
+        </video>
 
-          {/* Animated orbs */}
-          <div className="orb" style={{ width: 700, height: 700, top: '-20%', left: '-15%', background: 'radial-gradient(circle, rgba(0,255,136,0.09) 0%, transparent 70%)', animationDuration: '8s' }} />
-          <div className="orb" style={{ width: 450, height: 450, bottom: '5%', right: '-8%', background: 'radial-gradient(circle, rgba(6,182,212,0.08) 0%, transparent 70%)', animationDelay: '3s', animationDuration: '10s' }} />
-          <div className="orb" style={{ width: 280, height: 280, top: '35%', right: '25%', background: 'radial-gradient(circle, rgba(167,139,250,0.07) 0%, transparent 70%)', animationDelay: '5s', animationDuration: '12s' }} />
+        {/* Horizontal pan — crypto chart image slides left→right over 28s */}
+        <img src="/images/crypto-trading.webp" alt="" className="absolute inset-0 w-full h-full object-cover"
+          style={{
+            opacity: 0.2,
+            filter: 'saturate(3) hue-rotate(120deg) brightness(0.5)',
+            mixBlendMode: 'screen',
+            animation: 'panRight 28s ease-in-out infinite alternate',
+            transformOrigin: 'center center',
+          }} />
 
-          <div className="scanline" style={{ background: 'linear-gradient(90deg, transparent, rgba(0,255,136,0.07), transparent)' }} />
-          <div className="grid-pan" />
-        </div>
+        {/* Depth overlays */}
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 30%, rgba(0,255,136,0.16) 0%, transparent 70%)' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(2,4,8,0.2) 0%, rgba(2,4,8,0.1) 40%, rgba(2,4,8,0.85) 85%, rgba(2,4,8,1) 100%)' }} />
+        <div className="absolute inset-0 grid-bg opacity-20" />
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-20 w-full">
           <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>

@@ -9,7 +9,7 @@ const GalaxyBackground = lazy(() => import('../components/GalaxyBackground'))
 const brokers = [
   { name: 'Interactive Brokers', sub: 'TWS API' },
   { name: 'Alpaca', sub: 'Paper + Live' },
-  { name: 'Alpha Vantage', sub: 'Data Only' },
+  { name: 'Market Data Feed', sub: 'Multiple Sources' },
   { name: 'Virtual Venue', sub: 'Simulated' },
   { name: '+ Any Broker', sub: 'Configurable' },
 ]

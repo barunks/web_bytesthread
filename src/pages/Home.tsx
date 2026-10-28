@@ -289,7 +289,7 @@ export default function Home() {
                   'Monotonic P&L accounting with max drawdown auto-cancel',
                   'BNM compliance certificates with PDF watermarks',
                   'AWS RDS + ElastiCache Redis with circuit-breaker failover',
-                  'Multi-gateway payments: Razorpay, Stripe, Bank Transfer',
+                  'Multi-gateway payment processing with automatic failover and audit trail',
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-3 text-sm text-slate-300">
                     <Shield size={14} className="text-purple-400 mt-0.5 shrink-0" />

@@ -94,41 +94,30 @@ export default function HftFx() {
   return (
     <div style={{ backgroundColor: '#020408' }}>
 
-      {/* ── ANIMATED HERO ── */}
+      {/* ── HERO ── */}
       <section className="relative min-h-screen flex items-center overflow-hidden pt-24">
 
-        {/* Animated CSS background */}
-        <div className="animated-hero-bg">
-          {/* Base image grid */}
-          <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
-            {[
-              '/images/hft-screen.webp',
-              '/images/hft-datacenter.webp',
-              '/images/equities.webp',
-              '/images/fx-trading.webp',
-            ].map((src, i) => (
-              <div key={i} className="overflow-hidden">
-                <img src={src} alt="" className="w-full h-full object-cover"
-                  style={{ filter: 'brightness(0.18) saturate(1.6)', transform: 'scale(1.05)', transition: 'transform 8s ease' }} />
-              </div>
-            ))}
-          </div>
+        {/* Galaxy video — cyan tint */}
+        <video autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: 'hue-rotate(180deg) saturate(2.5) brightness(0.45)', opacity: 0.85 }}>
+          <source src="/videos/galaxy.mp4" type="video/mp4" />
+        </video>
 
-          {/* Gradient overlays */}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(2,4,8,0.5) 0%, rgba(2,4,8,0.65) 55%, rgba(2,4,8,1) 100%)' }} />
-          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(6,182,212,0.2) 0%, transparent 70%)' }} />
+        {/* Ken Burns slow zoom — datacenter image drifts in over 22s */}
+        <img src="/images/hft-datacenter.webp" alt="" className="absolute inset-0 w-full h-full object-cover"
+          style={{
+            opacity: 0.18,
+            filter: 'saturate(2.5) hue-rotate(170deg) brightness(0.6)',
+            mixBlendMode: 'screen',
+            animation: 'kenBurnsZoom 22s ease-in-out infinite alternate',
+            transformOrigin: 'center center',
+          }} />
 
-          {/* Animated orbs */}
-          <div className="orb" style={{ width: 600, height: 600, top: '-15%', left: '-10%', background: 'radial-gradient(circle, rgba(6,182,212,0.1) 0%, transparent 70%)', animationDelay: '0s', animationDuration: '7s' }} />
-          <div className="orb" style={{ width: 400, height: 400, bottom: '10%', right: '-5%', background: 'radial-gradient(circle, rgba(0,255,136,0.08) 0%, transparent 70%)', animationDelay: '2s', animationDuration: '9s' }} />
-          <div className="orb" style={{ width: 300, height: 300, top: '40%', right: '20%', background: 'radial-gradient(circle, rgba(167,139,250,0.07) 0%, transparent 70%)', animationDelay: '4s', animationDuration: '11s' }} />
-
-          {/* Scanline */}
-          <div className="scanline" />
-
-          {/* Animated grid */}
-          <div className="grid-pan" />
-        </div>
+        {/* Depth overlays */}
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 80% 60% at 50% 30%, rgba(6,182,212,0.2) 0%, transparent 70%)' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(2,4,8,0.2) 0%, rgba(2,4,8,0.1) 40%, rgba(2,4,8,0.85) 85%, rgba(2,4,8,1) 100%)' }} />
+        <div className="absolute inset-0 grid-bg opacity-20" />
 
         {/* Hero content */}
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-20 w-full">

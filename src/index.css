@@ -68,7 +68,7 @@
     z-index: 1;
   }
   .animate-ticker {
-    animation: ticker 35s linear infinite;
+    animation: ticker 20s linear infinite;
   }
   .section-divider {
     height: 1px;
@@ -139,6 +139,32 @@
 @keyframes gridPan {
   0%   { background-position: 0px 0px; }
   100% { background-position: 50px 50px; }
+}
+
+/* Ken Burns — slow zoom in */
+@keyframes kenBurnsZoom {
+  0%   { transform: scale(1)    translateX(0px); }
+  100% { transform: scale(1.18) translateX(-20px); }
+}
+/* Horizontal pan left to right */
+@keyframes panRight {
+  0%   { transform: scale(1.15) translateX(-4%); }
+  100% { transform: scale(1.15) translateX(4%); }
+}
+/* Slow vertical drift — used for parallax layers */
+@keyframes driftUp {
+  0%   { transform: scale(1.12) translateY(0px); }
+  100% { transform: scale(1.12) translateY(-40px); }
+}
+@keyframes driftDown {
+  0%   { transform: scale(1.12) translateY(0px); }
+  100% { transform: scale(1.12) translateY(40px); }
+}
+/* Slow diagonal drift */
+@keyframes driftDiag {
+  0%   { transform: scale(1.1) translate(0px, 0px); }
+  50%  { transform: scale(1.1) translate(-15px, -20px); }
+  100% { transform: scale(1.1) translate(0px, 0px); }
 }
 .animated-hero-bg {
   position: absolute;

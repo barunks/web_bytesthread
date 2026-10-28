@@ -2,41 +2,57 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
   ArrowRight, BarChart2, Shield, TrendingUp, CheckCircle,
-  Eye, AlertTriangle, FileText, CreditCard, Cloud,
+  Eye, AlertTriangle, FileText, CreditCard, Cloud, Activity,
 } from 'lucide-react'
 import FadeIn from '../components/FadeIn'
 
 const outcomes = [
   { value: 'Real-Time', label: 'Portfolio P&L', sub: 'Live across all positions' },
-  { value: 'AWS', label: 'Production Hosted', sub: 'Scalable cloud infrastructure' },
-  { value: 'BNM', label: 'Compliance Ready', sub: 'Regulatory reporting built-in' },
-  { value: '3', label: 'Payment Gateways', sub: 'Razorpay · Stripe · Bank' },
+  { value: 'What-If', label: 'Scenario Analysis', sub: 'Stress-test before you trade' },
+  { value: 'BNM', label: 'Compliance Ready', sub: 'Taxation & regulatory reports' },
+  { value: 'Pre-Trade', label: 'Risk Controls', sub: 'Enforced on every order' },
+  { value: 'Multi', label: 'Market Data Sources', sub: 'Automatic failover & normalisation' },
+  { value: 'Multi', label: 'Payment Gateways', sub: 'Multiple providers supported' },
+  { value: 'Full', label: 'Audit Trail', sub: 'Every transaction logged' },
+  { value: 'AWS', label: 'Cloud Native', sub: 'Auto-scaling, zero-downtime' },
 ]
 
 const portfolioCapabilities = [
   {
     icon: Eye,
     color: '#0ea5e9',
-    title: 'Complete Portfolio Visibility',
-    desc: 'See every position, P&L, and exposure across your entire book in real time. Drill down by instrument, sector, or strategy — with live market data updating automatically.',
+    title: 'Live Portfolio P&L — Every Position, Every Second',
+    desc: 'Real-time P&L across your entire book. Drill down by instrument, sector, account, or strategy. Intraday performance, unrealised gains, and exposure all in one view — updating continuously as markets move.',
+  },
+  {
+    icon: Activity,
+    color: '#00d4ff',
+    title: 'Market Forecasting & Analyst Intelligence',
+    desc: 'Forward EPS estimates, analyst consensus price targets (high, low, mean, median), PEG ratio, forward P/E, and revenue projections surface directly in your portfolio view — so you see where each position is heading, not just where it is.',
   },
   {
     icon: TrendingUp,
     color: '#10b981',
-    title: 'Smarter Investment Decisions',
-    desc: 'Live performance attribution shows exactly where returns are coming from. Identify your best and worst performers, track allocation drift, and rebalance with confidence.',
+    title: 'Earnings Surprise & Quarterly Trend Analysis',
+    desc: 'Track actual vs estimated earnings per quarter. Spot consistent beats or misses before the market reprices. Yearly revenue and earnings trends give your team the context to act ahead of consensus.',
   },
   {
     icon: BarChart2,
     color: '#a78bfa',
-    title: 'Multi-Asset, Multi-Exchange',
-    desc: 'Manage equities across SGX, NYSE, NASDAQ, and global markets from a single dashboard. Add new instruments and exchanges without rebuilding your infrastructure.',
+    title: 'What-If Scenario Analysis',
+    desc: 'Stress-test any position before you trade. Model the impact of price moves, earnings surprises, or macro shifts on your portfolio P&L and exposure — without touching live positions.',
+  },
+  {
+    icon: BarChart2,
+    color: '#60a5fa',
+    title: 'Multi-Asset, Multi-Exchange Coverage',
+    desc: 'Manage equities across SGX, NYSE, NASDAQ, LSEG, and global markets from a single dashboard. Add new instruments and exchanges without rebuilding your infrastructure.',
   },
   {
     icon: AlertTriangle,
     color: '#f59e0b',
-    title: 'Risk Before It Becomes a Problem',
-    desc: 'Gross and net exposure limits, drawdown alerts, and position concentration warnings surface automatically — giving your risk team time to act, not react.',
+    title: 'Risk Alerts Before They Become Problems',
+    desc: 'Gross and net exposure limits, drawdown alerts, beta-adjusted risk, and position concentration warnings surface automatically — giving your risk team time to act, not react.',
   },
 ]
 
@@ -44,26 +60,38 @@ const riskCapabilities = [
   {
     icon: Shield,
     color: '#8b5cf6',
-    title: 'Pre-Trade Risk Controls',
-    desc: 'Every order is checked against position limits, notional caps, and kill switches before it reaches the market. Risk is enforced, not monitored after the fact.',
+    title: 'Pre-Trade Risk Controls — Enforced, Not Monitored',
+    desc: 'Every order is checked against position limits, notional caps, and kill switches before it reaches the market. Risk is enforced at the point of order — not discovered in a post-trade report.',
   },
   {
     icon: FileText,
     color: '#8b5cf6',
-    title: 'Regulatory Compliance Reporting',
-    desc: 'Generate BNM-compliant compliance certificates with PDF watermarks, date-range audit reports, and full transaction history — ready for your regulator on demand.',
+    title: 'Taxation & Regulatory Compliance Reporting',
+    desc: 'Generate BNM-compliant compliance certificates, taxation reports, and date-range audit trails with PDF watermarks on demand. Full transaction history ready for your regulator and tax authority — no manual preparation.',
+  },
+  {
+    icon: Activity,
+    color: '#8b5cf6',
+    title: 'Vendor & Counterparty Risk Management',
+    desc: 'Monitor vendor exposure, counterparty concentration, and third-party risk across your entire operation. Automated risk scoring and escalation workflows keep your compliance team ahead of regulatory expectations.',
   },
   {
     icon: Cloud,
     color: '#8b5cf6',
     title: 'Enterprise Cloud Infrastructure',
-    desc: 'Deployed on AWS with automatic failover, connection pooling, and circuit-breaker fault tolerance. Your platform stays online even when individual components fail.',
+    desc: 'Deployed on AWS with automatic failover, connection pooling, and circuit-breaker fault tolerance. Your platform stays online even when individual components fail — zero-downtime deployments as standard.',
   },
   {
     icon: CreditCard,
     color: '#8b5cf6',
     title: 'Multi-Gateway Payment Processing',
-    desc: 'Accept payments via Razorpay, Stripe, or Bank Transfer with automatic retry logic, webhook validation, and a complete audit trail for every transaction.',
+    desc: 'Accept payments via multiple configured gateways with automatic retry logic, webhook validation, idempotent processing, and a complete audit trail for every transaction.',
+  },
+  {
+    icon: Eye,
+    color: '#8b5cf6',
+    title: 'Real-Time Compliance Dashboard',
+    desc: 'Live view of all active risk limits, breach alerts, and compliance status across your entire operation. Date-range analytics and drill-down reporting give your compliance team the evidence they need, instantly.',
   },
 ]
 
@@ -76,12 +104,14 @@ const platforms = [
     image: '/images/portfolio-mgmt.webp',
     hue: 200,
     headline: 'Your entire equity book. One dashboard. Real-time.',
-    pitch: 'BytePulse gives portfolio managers and trading desks a single, live view of their equity positions, P&L, and market exposure. Built for institutional-grade reliability — it scales from a single desk to a multi-strategy fund without changing your infrastructure.',
+    pitch: 'BytePulse gives portfolio managers and trading desks a single, live view of their equity positions, P&L, market exposure, and forward-looking intelligence. Earnings estimates, analyst price targets, quarterly earnings surprise tracking, and what-if scenario analysis sit alongside your live positions — so your team sees where the market is going, not just where it has been.',
     outcomes: [
-      'Real-time P&L and exposure across all positions and exchanges',
-      'Live market data with automatic price updates and performance attribution',
-      'Portfolio lifecycle management — create, modify, and close positions with full audit trail',
-      'Interactive dashboard with charts, allocation views, and drill-down analytics',
+      'Real-time P&L and exposure across all positions, accounts, and exchanges',
+      'Forward EPS, analyst price targets (high/low/mean/median), forward P/E, and PEG ratio per holding',
+      'Quarterly earnings actual vs estimate — spot consistent beats or misses before the market reprices',
+      'What-if scenario analysis — stress-test positions against price moves and earnings surprises',
+      'Yearly revenue and earnings trend history for every instrument in your book',
+      'Portfolio lifecycle management with full audit trail — create, modify, and close positions',
       'Scales horizontally on AWS — no performance degradation as your book grows',
     ],
     audience: 'Built for: Portfolio managers, equity trading desks, family offices, and asset managers.',
@@ -94,12 +124,13 @@ const platforms = [
     image: '/images/risk-compliance.webp',
     hue: 260,
     headline: 'Compliance your regulators trust. Controls your desk won\'t fight.',
-    pitch: 'A production-deployed risk management platform on AWS that satisfies compliance teams without slowing down trading operations. Pre-trade guardrails, regulatory reporting, and multi-gateway payment processing — all in one platform.',
+    pitch: 'A production-deployed risk management platform on AWS covering pre-trade guardrails, taxation reporting, BNM compliance certificates, vendor risk management, and multi-gateway payment processing. Satisfies your compliance team without slowing down trading operations — because risk is enforced at the point of order, not discovered in a post-trade report.',
     outcomes: [
-      'BNM-compliant compliance certificates generated on demand with PDF watermarks',
-      'Pre-trade risk controls enforced on every order — position limits, notional caps, kill switches',
-      'Full audit trail with date-range reporting for regulatory review',
-      'Multi-gateway payments with automatic failover and idempotent retry logic',
+      'BNM-compliant compliance certificates and taxation reports generated on demand with PDF watermarks',
+      'Vendor & counterparty risk scoring with automated escalation workflows',
+      'Pre-trade risk controls on every order — position limits, notional caps, kill switches',
+      'Full audit trail with date-range reporting — every transaction logged for regulatory review',
+      'Multi-gateway payment processing with automatic failover and idempotent retry logic',
       'AWS-native with circuit-breaker fault tolerance and zero-downtime deployments',
     ],
     audience: 'Built for: Risk managers, compliance officers, regulated financial institutions, and regional banks.',
@@ -117,37 +148,45 @@ export default function PortfolioRisk() {
   return (
     <div style={{ backgroundColor: '#020408' }}>
 
-      {/* ── ANIMATED HERO ── */}
+      {/* ── HERO ── */}
       <section className="relative min-h-screen flex items-center overflow-hidden pt-24">
 
-        <div className="animated-hero-bg">
-          {/* Quad image grid */}
-          <div className="absolute inset-0 grid grid-cols-2 grid-rows-2">
-            {[
-              { src: '/images/portfolio-mgmt.webp', hue: 200 },
-              { src: '/images/trading-chart.webp', hue: 160 },
-              { src: '/images/risk-compliance.webp', hue: 260 },
-              { src: '/images/analytics.webp', hue: 30 },
-            ].map((img, i) => (
-              <div key={i} className="overflow-hidden">
-                <img src={img.src} alt="" className="w-full h-full object-cover"
-                  style={{ filter: `brightness(0.2) saturate(2) hue-rotate(${img.hue}deg)`, transform: 'scale(1.05)' }} />
-              </div>
-            ))}
+        {/* Galaxy video — blue tint */}
+        <video autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ filter: 'hue-rotate(200deg) saturate(2.5) brightness(0.42)', opacity: 0.85 }}>
+          <source src="/videos/galaxy.mp4" type="video/mp4" />
+        </video>
+
+        {/* 4-panel image grid — each panel drifts at a different speed & direction */}
+        <div className="absolute inset-0 grid grid-cols-2 grid-rows-2" style={{ opacity: 0.14 }}>
+          <div className="overflow-hidden">
+            <img src="/images/portfolio-mgmt.webp" alt="" className="w-full h-full object-cover"
+              style={{ filter: 'saturate(2.5) hue-rotate(200deg) brightness(0.6)', mixBlendMode: 'screen',
+                animation: 'driftUp 18s ease-in-out infinite alternate', transformOrigin: 'center center' }} />
           </div>
-
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(2,4,8,0.5) 0%, rgba(2,4,8,0.65) 55%, rgba(2,4,8,1) 100%)' }} />
-          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 70% 50% at 30% 50%, rgba(14,165,233,0.15) 0%, transparent 60%)' }} />
-          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 50% 40% at 80% 50%, rgba(139,92,246,0.12) 0%, transparent 60%)' }} />
-
-          {/* Animated orbs */}
-          <div className="orb" style={{ width: 600, height: 600, top: '-10%', left: '-10%', background: 'radial-gradient(circle, rgba(14,165,233,0.1) 0%, transparent 70%)', animationDuration: '8s' }} />
-          <div className="orb" style={{ width: 500, height: 500, bottom: '0%', right: '-5%', background: 'radial-gradient(circle, rgba(139,92,246,0.09) 0%, transparent 70%)', animationDelay: '3s', animationDuration: '10s' }} />
-          <div className="orb" style={{ width: 300, height: 300, top: '40%', left: '40%', background: 'radial-gradient(circle, rgba(16,185,129,0.07) 0%, transparent 70%)', animationDelay: '5s', animationDuration: '12s' }} />
-
-          <div className="scanline" style={{ background: 'linear-gradient(90deg, transparent, rgba(14,165,233,0.07), transparent)' }} />
-          <div className="grid-pan" />
+          <div className="overflow-hidden">
+            <img src="/images/trading-chart.webp" alt="" className="w-full h-full object-cover"
+              style={{ filter: 'saturate(2.5) hue-rotate(160deg) brightness(0.6)', mixBlendMode: 'screen',
+                animation: 'driftDown 22s ease-in-out infinite alternate', transformOrigin: 'center center' }} />
+          </div>
+          <div className="overflow-hidden">
+            <img src="/images/risk-compliance.webp" alt="" className="w-full h-full object-cover"
+              style={{ filter: 'saturate(2.5) hue-rotate(260deg) brightness(0.6)', mixBlendMode: 'screen',
+                animation: 'driftDown 20s ease-in-out infinite alternate', transformOrigin: 'center center' }} />
+          </div>
+          <div className="overflow-hidden">
+            <img src="/images/analytics.webp" alt="" className="w-full h-full object-cover"
+              style={{ filter: 'saturate(2.5) hue-rotate(30deg) brightness(0.6)', mixBlendMode: 'screen',
+                animation: 'driftUp 25s ease-in-out infinite alternate', transformOrigin: 'center center' }} />
+          </div>
         </div>
+
+        {/* Depth overlays */}
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 80% 60% at 30% 40%, rgba(14,165,233,0.2) 0%, transparent 60%)' }} />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse 60% 50% at 80% 60%, rgba(139,92,246,0.14) 0%, transparent 60%)' }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(2,4,8,0.2) 0%, rgba(2,4,8,0.1) 40%, rgba(2,4,8,0.85) 85%, rgba(2,4,8,1) 100%)' }} />
+        <div className="absolute inset-0 grid-bg opacity-20" />
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-20 w-full">
           <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
@@ -157,7 +196,7 @@ export default function PortfolioRisk() {
               className="inline-flex items-center gap-2 px-5 py-2 rounded-full mb-8"
               style={{ border: '1px solid rgba(14,165,233,0.35)', backgroundColor: 'rgba(14,165,233,0.08)', backdropFilter: 'blur(8px)' }}>
               <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: '#0ea5e9' }} />
-              <span className="text-xs font-mono" style={{ color: '#0ea5e9' }}>Portfolio Management · Risk Controls · Compliance · Payments</span>
+              <span className="text-xs font-mono" style={{ color: '#0ea5e9' }}>Portfolio Management · Risk Controls · Compliance · Taxation · Market Forecasting</span>
             </motion.div>
 
             <h1 className="text-5xl md:text-7xl font-black text-white leading-none mb-6">
@@ -166,8 +205,9 @@ export default function PortfolioRisk() {
             </h1>
 
             <p className="text-xl text-slate-300 max-w-2xl leading-relaxed mb-4">
-              BytesThread delivers <span style={{ color: '#0ea5e9', fontWeight: 600 }}>enterprise portfolio management</span> and
-              <span style={{ color: '#8b5cf6', fontWeight: 600 }}> risk compliance platforms</span> that give trading desks
+              BytesThread delivers <span style={{ color: '#0ea5e9', fontWeight: 600 }}>enterprise portfolio management</span>,
+              <span style={{ color: '#8b5cf6', fontWeight: 600 }}> risk compliance platforms</span>, and
+              <span style={{ color: '#f59e0b', fontWeight: 600 }}> market forecasting tools</span> that give trading desks
               real-time visibility, regulators the reporting they require, and operations teams the controls they need.
             </p>
             <p className="text-slate-500 max-w-xl mb-10">
@@ -188,7 +228,7 @@ export default function PortfolioRisk() {
             </div>
 
             {/* Outcome metrics */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-2xl">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl">
               {outcomes.map((o, i) => (
                 <motion.div key={i}
                   initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 + i * 0.1 }}
@@ -227,10 +267,10 @@ export default function PortfolioRisk() {
           <FadeIn className="text-center mb-14">
             <span className="text-xs font-mono uppercase tracking-widest" style={{ color: '#0ea5e9' }}>BytePulse Portfolio Suite</span>
             <h2 className="text-3xl md:text-4xl font-black text-white mt-2">
-              Everything Your Portfolio Team Needs
+              Know Your Portfolio. Know the Market. Know What's Next.
             </h2>
             <p className="text-slate-400 mt-3 max-w-xl mx-auto">
-              From live market data to P&L attribution and position management — BytePulse gives your team the visibility to make better decisions, faster.
+              Real-time P&L, earnings forecasts, analyst price targets, what-if scenario analysis, and quarterly earnings surprise tracking — everything a portfolio manager needs to make better decisions, faster.
             </p>
           </FadeIn>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -257,10 +297,10 @@ export default function PortfolioRisk() {
           <FadeIn className="text-center mb-14">
             <span className="text-xs font-mono uppercase tracking-widest" style={{ color: '#8b5cf6' }}>Risk & Compliance Platform</span>
             <h2 className="text-3xl md:text-4xl font-black text-white mt-2">
-              Risk Controls Your Regulators Require
+              Compliance Your Regulators Trust.
             </h2>
             <p className="text-slate-400 mt-3 max-w-xl mx-auto">
-              Pre-trade guardrails, regulatory reporting, and payment processing — all in one platform, deployed on AWS, ready for your compliance team on day one.
+              Taxation reports, BNM compliance certificates, vendor risk management, pre-trade guardrails, and payment processing — all in one platform, deployed on AWS, ready for your compliance team on day one.
             </p>
           </FadeIn>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -347,11 +387,11 @@ export default function PortfolioRisk() {
         <div className="relative z-10 max-w-3xl mx-auto text-center">
           <FadeIn>
             <h2 className="text-3xl md:text-5xl font-black text-white mb-5">
-              Ready to take control of<br />
-              <span className="text-gradient">your portfolio and risk?</span>
+              See your portfolio clearly.<br />
+              <span className="text-gradient">Act before the market moves.</span>
             </h2>
             <p className="text-slate-400 text-lg mb-10 leading-relaxed">
-              Whether you need real-time portfolio visibility, regulatory compliance reporting, or a complete institutional trading infrastructure — we build it production-ready on AWS.
+              Real-time P&L, earnings forecasts, analyst price targets, what-if analysis, taxation reporting, and pre-trade risk controls — all in one platform, production-ready on AWS.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link to="/contact"
